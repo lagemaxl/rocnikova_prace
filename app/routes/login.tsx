@@ -46,7 +46,7 @@ const AuthenticationImage: React.FC = () => {
       if (err instanceof Error) {
         setError("Nepodařilo se přihlásit, zkuste to prosím znovu");
       } else {
-        setError("Nepodařilo se přihlásit, zkuste to prosím znovu později");
+        setError("Nastala chyba, zkuste to prosím znovu později");
       }
     }
   };
