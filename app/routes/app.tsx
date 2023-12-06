@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, SetStateAction } from "react";
 import {
   IconBellRinging,
   IconSettings,
@@ -8,6 +8,8 @@ import {
 } from "@tabler/icons-react";
 import classes from "~/style/NavbarSimple.module.css";
 import { Container, Group, Anchor } from "@mantine/core";
+import pb from "../lib/pocketbase";
+import { useNavigate } from 'react-router-dom';
 
 const data = [
   { link: "", label: "Domů", icon: IconHome },
@@ -89,8 +91,27 @@ export function InputWithButton(props: TextInputProps) {
   );
 }
 
+
 export default function NavbarSimple() {
   const [active, setActive] = useState("Billing");
+  const navigate = useNavigate();
+  /*
+  const [token, setToken] = useState<string>("");
+
+useEffect(() => {
+  const storedToken = localStorage.getItem('token');
+  if (storedToken) {
+    setToken(storedToken);
+  }
+}, []);
+
+*/
+
+useEffect(() => {
+  if (pb.authStore.isValid === true) {
+    navigate('/login');
+  }
+}, [navigate]);
 
   const links = data.map((item) => (
     <a

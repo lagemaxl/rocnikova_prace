@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import { Paper, TextInput, PasswordInput, Button, Title, Text } from "@mantine/core";
 import { Link, useNavigate } from "react-router-dom";
 import classes from "~/style/AuthenticationImage.module.css";
@@ -41,6 +41,8 @@ const AuthenticationImage: React.FC = () => {
     try {
       const authData = await pb.collection('users').authWithPassword(email, password);
       console.log("Authentication Successful", authData);
+      console.log(authData.token);
+      //localStorage.setItem("token", authData.token);
       navigate("/app");
     } catch (err) {
       if (err instanceof Error) {
