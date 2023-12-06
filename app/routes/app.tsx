@@ -91,9 +91,8 @@ export function InputWithButton(props: TextInputProps) {
   );
 }
 
-
 export default function NavbarSimple() {
-  const [active, setActive] = useState("Billing");
+  const [active, setActive] = useState("Domů");
   const navigate = useNavigate();
   /*
   const [token, setToken] = useState<string>("");
@@ -108,7 +107,7 @@ useEffect(() => {
 */
 
 useEffect(() => {
-  if (pb.authStore.isValid === true) {
+  if (pb.authStore.isValid === false) {
     navigate('/login');
   }
 }, [navigate]);
