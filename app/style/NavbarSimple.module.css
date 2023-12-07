@@ -77,6 +77,12 @@
     border-top: rem(1px) solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
   }
   
+.footerGroup {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
   .inner {
     display: flex;
     justify-content: space-between;

@@ -1,23 +1,26 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import classes from "~/style/NavbarSimple.module.css";
 import pb from "../lib/pocketbase";
 import Home from "./Home";
-import { Menu, Group, Text, useMantineTheme, ActionIcon, rem,  Avatar as MantineAvatar, Avatar} from '@mantine/core';
+import {
+  Menu,
+  Group,
+  Text,
+  useMantineTheme,
+  ActionIcon,
+  rem,
+  Avatar as MantineAvatar,
+  Avatar,
+} from "@mantine/core";
 import {
   IconLogout,
-  IconHeart,
-  IconStar,
-  IconMessage,
   IconSettings,
-  IconPlayerPause,
-  IconTrash,
   IconSwitchHorizontal,
-  IconChevronRight,
   IconDots,
   IconBellRinging,
   IconHome,
-} from '@tabler/icons-react';
+} from "@tabler/icons-react";
 
 interface LinkData {
   link: string;
@@ -47,14 +50,16 @@ export default function NavbarSimple() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8090/api/collections/users/records/${pb?.authStore?.model?.id}`);
+        const response = await fetch(
+          `http://127.0.0.1:8090/api/collections/users/records/${pb?.authStore?.model?.id}`
+        );
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const jsonData: UserData = await response.json();
         setDataUser(jsonData);
       } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
+        console.error("There was a problem with the fetch operation:", error);
       }
     };
     fetchData();
@@ -64,7 +69,7 @@ export default function NavbarSimple() {
 
   useEffect(() => {
     if (!pb.authStore.isValid) {
-      navigate('/login');
+      navigate("/login");
     }
   }, [navigate, pb.authStore.isValid]);
 
@@ -93,17 +98,14 @@ export default function NavbarSimple() {
             {links}
           </div>
           <div className={classes.footer}>
-            <Group gap="sm">
-              <MantineAvatar
-                size={50}
-                src={avatarURL}
-                radius={30}
-              />
+            <Group gap="sm" className={classes.footerGroup}>
+              <Group>
+              <MantineAvatar size={50} src={avatarURL} radius={30} />
               <Text fontSize="medium" fontWeight={500}>
-                {dataUser.name} {dataUser.surname} <br />
-                @{dataUser.username}
+                {dataUser.name} {dataUser.surname} <br />@{dataUser.username}
               </Text>
-              <UserMenu dataUser={dataUser} avatarURL={avatarURL} />
+              </Group>
+              <UserMenu />
             </Group>
           </div>
         </nav>
@@ -119,53 +121,48 @@ interface UserMenuProps {
   avatarURL: string;
 }
 
-export function UserMenu({ dataUser, avatarURL }: UserMenuProps) {
+export function UserMenu() {
+  const navigate = useNavigate();
   return (
     <Group justify="center">
       <Menu
         withArrow
         width={300}
         position="bottom"
-        transitionProps={{ transition: 'pop' }}
+        transitionProps={{ transition: "pop" }}
         withinPortal
       >
         <Menu.Target>
           <ActionIcon variant="default">
-            <IconDots style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+            <IconDots
+              style={{ width: rem(16), height: rem(16) }}
+              stroke={1.5}
+            />
           </ActionIcon>
         </Menu.Target>
         <Menu.Dropdown>
-            <Group>
-              <Avatar
-                radius="xl"
-                src={avatarURL}
-              />
-
-              <div>
-                <Text fw={500}>{dataUser.name} {dataUser.surname}</Text>
-                <Text size="xs" c="dimmed">
-                  {dataUser.email}
-                </Text>
-              </div>
-            </Group>
-
-          <Menu.Divider />
-
           <Menu.Label>Nastavení</Menu.Label>
           <Menu.Item
-            leftSection={<IconSettings style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+            leftSection={
+              <IconSettings
+                style={{ width: rem(16), height: rem(16) }}
+                stroke={1.5}
+              />
+            }
           >
             Nastavení účtu
           </Menu.Item>
           <Menu.Item
             leftSection={
-              <IconSwitchHorizontal style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+              <IconLogout
+                style={{ width: rem(16), height: rem(16) }}
+                stroke={1.5}
+              />
             }
-          >
-            Změna účtu
-          </Menu.Item>
-          <Menu.Item
-            leftSection={<IconLogout style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+            onClick={() => {
+              navigate("/login");
+              pb.authStore.clear();
+            }}
           >
             Odhlásit se
           </Menu.Item>
