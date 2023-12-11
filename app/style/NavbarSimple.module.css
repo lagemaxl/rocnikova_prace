@@ -100,3 +100,15 @@
       margin-top: var(--mantine-spacing-md);
     }
   }
+
+.activeLink {
+  background-color: #e8f3fc !important;
+}
+
+.activeLink svg {
+  color: var(--mantine-color-black) !important;
+}
+
+.activeLink span {
+  color: var(--mantine-color-black) !important;
+}

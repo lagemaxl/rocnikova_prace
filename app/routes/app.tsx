@@ -37,9 +37,9 @@ interface UserData {
 }
 
 const data: LinkData[] = [
-  { link: "", label: "Domů", icon: IconHome },
-  { link: "", label: "Oznámení", icon: IconBellRinging },
-  { link: "", label: "Nastavení", icon: IconSettings },
+  { link: "/home", label: "Domů", icon: IconHome },
+  { link: "/notifications", label: "Oznámení", icon: IconBellRinging },
+  { link: "/settings", label: "Nastavení", icon: IconSettings },
 ];
 
 export default function NavbarSimple() {
@@ -75,7 +75,7 @@ export default function NavbarSimple() {
 
   const links = data.map((item: LinkData) => (
     <a
-      className={classes.link}
+      className={`${classes.link} ${active === item.label ? classes.activeLink : ''}`}
       onClick={(event) => {
         event.preventDefault();
         setActive(item.label);
@@ -86,6 +86,7 @@ export default function NavbarSimple() {
       <span>{item.label}</span>
     </a>
   ));
+  
 
   return (
     dataUser && (
