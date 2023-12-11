@@ -1,91 +1,64 @@
+import React, { useEffect, useState } from 'react';
 import pb from "../lib/pocketbase";
-import { IconHeart } from '@tabler/icons-react';
-import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
 import classes from "~/style/BadgeCard.module.css";
 
-const mockdata = {
-  image:
-    'https://images.unsplash.com/photo-1437719417032-8595fd9e9dc6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80',
-  title: 'Verudela Beach',
-  country: 'Croatia',
-  description:
-    'Completely renovated for the season 2020, Arena Verudela Bech Apartments are fully equipped and modernly furnished 4-star self-service apartments located on the Adriatic coastline by one of the most beautiful beaches in Pula.',
-  badges: [
-    { emoji: '☀️', label: 'Sunny weather' },
-    { emoji: '🦓', label: 'Onsite zoo' },
-    { emoji: '🌊', label: 'Sea' },
-    { emoji: '🌲', label: 'Nature' },
-    { emoji: '🤽', label: 'Water sports' },
-  ],
-};
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  images: string[]; 
+  collectionId: string;
+}
 
-
+async function getEvents(): Promise<Event[]> {
+  try {
+    const res = await fetch(
+      "http://127.0.0.1:8090/api/collections/events/records/",
+      { cache: "no-store" }
+    );
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status}`);
+    }
+    const data = await res.json();
+    return data?.items || [];
+  } catch (error) {
+    console.error("Failed to fetch events:", error);
+    return [];
+  }
+}
 
 export default function Home() {
-  
+  const [events, setEvents] = useState<Event[]>([]);
 
+  useEffect(() => {
+    getEvents().then(setEvents);
+  }, []);
 
   return (
-    <>
-   <BadgeCard />
-    </>
+    <div className={classes.home}>
+      {events.map((event) => (
+        <EventCard key={event.id} event={event} />
+      ))}
+    </div>
   );
 }
 
-export function Event() {
-  return (
-    <>
-   
-    </>
-  );
-}
+export function EventCard({ event }: { event: Event }) {
+  const imageUrl = event.images.length > 0 
+    ? `http://127.0.0.1:8090/api/files/${event.collectionId}/${event.id}/${event.images[0]}` 
+    : 'default_image_path.jpg';
 
-
-export function BadgeCard() {
-  const { image, title, description, country, badges } = mockdata;
-  const features = badges.map((badge) => (
-    <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
-      {badge.label}
-    </Badge>
-  ));
+  const shortDescription = event.description.length > 100 
+    ? `${event.description.substring(0, 97)}...` 
+    : event.description;
 
   return (
-    <Card withBorder radius="md" p="md" className={classes.card}>
-      <Card.Section>
-        <Image src={image} alt={title} height={180} />
-      </Card.Section>
-
-      <Card.Section className={classes.section} mt="md">
-        <Group justify="apart">
-          <Text fz="lg" fw={500}>
-            {title}
-          </Text>
-          <Badge size="sm" variant="light">
-            {country}
-          </Badge>
-        </Group>
-        <Text fz="sm" mt="xs">
-          {description}
-        </Text>
-      </Card.Section>
-
-      <Card.Section className={classes.section}>
-        <Text mt="md" className={classes.label} c="dimmed">
-          Perfect for you, if you enjoy
-        </Text>
-        <Group gap={7} mt={5}>
-          {features}
-        </Group>
-      </Card.Section>
-
-      <Group mt="xs">
-        <Button radius="md" style={{ flex: 1 }}>
-          Show details
-        </Button>
-        <ActionIcon variant="default" radius="md" size={36}>
-          <IconHeart className={classes.like} stroke={1.5} />
-        </ActionIcon>
-      </Group>
-    </Card>
+    <div className={classes.card}>
+      <img src={imageUrl} alt="Event Image" className={classes.image} />
+      <div className={classes.info}>
+        <h1>{event.title}</h1>
+        <p>{shortDescription}</p>
+      </div>
+    </div>
   );
 }

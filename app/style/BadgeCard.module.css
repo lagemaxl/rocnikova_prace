@@ -1,23 +1,47 @@
 .card {
     background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
-    width: 300px;
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin: 10px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   
-  .section {
-    border-bottom: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
-    padding-left: var(--mantine-spacing-md);
-    padding-right: var(--mantine-spacing-md);
-    padding-bottom: var(--mantine-spacing-md);
+.image {
+    width: 200px;
+    height: 150px;
+    border-radius: 20px 0 0 20px;
+    object-fit: cover;
   }
-  
-  .like {
-    color: var(--mantine-color-red-6);
-    width: rem(20px);
-    height: rem(20px);
+
+  .info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
   }
-  
-  .label {
-    text-transform: uppercase;
-    font-size: var(--mantine-font-size-xs);
-    font-weight: 700;
+
+  h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 1rem;
+    margin: 0;
+    margin-bottom: 10px;
+  }
+
+  .home {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
   }
