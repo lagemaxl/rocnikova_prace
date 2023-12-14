@@ -2,12 +2,34 @@ import React, { useEffect, useState } from 'react';
 import pb from "../lib/pocketbase";
 import classes from "~/style/BadgeCard.module.css";
 
+function formatDate(dateStr: string): string {
+  // Vytvoření Date objektu z ISO řetězce
+  const date = new Date(dateStr);
+
+  // Nastavení lokalizace a formátu
+  const options: Intl.DateTimeFormatOptions = {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  };
+
+  // Formátování data do požadovaného formátu
+  return date.toLocaleString('cs-CZ', options).replace(',', '');
+}
+
+
 interface Event {
   id: string;
   title: string;
   description: string;
   images: string[]; 
   collectionId: string;
+  from_date: string;
+  to_date: string;
+  owner: string;
 }
 
 async function getEvents(): Promise<Event[]> {
@@ -58,6 +80,8 @@ export function EventCard({ event }: { event: Event }) {
       <div className={classes.info}>
         <h1>{event.title}</h1>
         <p>{shortDescription}</p>
+        <p>od: {formatDate(event.from_date)}</p>
+        <p>do: {formatDate(event.to_date)}</p>
       </div>
     </div>
   );

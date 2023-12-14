@@ -16,10 +16,12 @@ import {
 import {
   IconLogout,
   IconSettings,
-  IconSwitchHorizontal,
+  IconUsersGroup,
   IconDots,
   IconBellRinging,
   IconHome,
+  IconUserCircle,
+  IconHistory,
 } from "@tabler/icons-react";
 
 interface LinkData {
@@ -40,6 +42,9 @@ const data: LinkData[] = [
   { link: "/home", label: "Domů", icon: IconHome },
   { link: "/notifications", label: "Oznámení", icon: IconBellRinging },
   { link: "/settings", label: "Nastavení", icon: IconSettings },
+  { link: "/groups", label: "Skupiny", icon: IconUsersGroup },
+  { link: "/profile", label: "Můj profil", icon: IconUserCircle },
+  { link: "/history", label: "Historie", icon: IconHistory },
 ];
 
 export default function NavbarSimple() {
@@ -97,7 +102,10 @@ export default function NavbarSimple() {
               <h1>Název</h1>
             </Group>
             {links}
+          <button className={classes.addeventbutton}>Vytvořit událost</button>
+
           </div>
+
           <div className={classes.footer}>
             <Group gap="sm" className={classes.footerGroup}>
               <Group>
