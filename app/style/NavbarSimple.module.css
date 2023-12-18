@@ -10,6 +10,7 @@
     padding: var(--mantine-spacing-md);
     display: flex;
     flex-direction: column;
+    position: fixed;
     border-right: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
   }
   
@@ -65,12 +66,13 @@
   .linkIcon {
     color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-2));
     margin-right: var(--mantine-spacing-sm);
-    width: rem(25px);
-    height: rem(25px);
+    width: rem(30px);
+    height: rem(30px);
   }
 
   .navbar span {
     color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-2));
+    font-size: 1em;
   }
 
 
@@ -127,4 +129,12 @@
 
 .addeventbutton:hover {
   background-color: #339af0;  
+}
+
+.appcontainer {
+  display: flex;
+  flex-direction: flex-start;
+  align-items: flex-start;
+  width: 85%;
+  margin-left: 16%;
 }

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import classes from "~/style/NavbarSimple.module.css";
 import pb from "../lib/pocketbase";
 import Home from "./Home";
+import NewEvent from "~/components/newevent";
 import {
   Menu,
   Group,
@@ -80,46 +81,50 @@ export default function NavbarSimple() {
 
   const links = data.map((item: LinkData) => (
     <a
-      className={`${classes.link} ${active === item.label ? classes.activeLink : ''}`}
+      className={`${classes.link} ${
+        active === item.label ? classes.activeLink : ""
+      }`}
       onClick={(event) => {
         event.preventDefault();
         setActive(item.label);
       }}
       key={item.label}
     >
-      <item.icon className={classes.linkIcon} stroke={1.5} />
+      <item.icon className={classes.linkIcon} stroke={2} />
       <span>{item.label}</span>
     </a>
   ));
-  
 
   return (
     dataUser && (
       <div className={classes.container}>
         <nav className={classes.navbar}>
           <div className={classes.navbarMain}>
-            <Group className={classes.header} justify="space-between">
-              <h1>Název</h1>
-            </Group>
             {links}
-          <button className={classes.addeventbutton}>Vytvořit událost</button>
-
+            <button
+              className={classes.addeventbutton}
+              onClick={() => setActive("newevent")}
+            >
+              Vytvořit událost
+            </button>
           </div>
 
           <div className={classes.footer}>
             <Group gap="sm" className={classes.footerGroup}>
               <Group>
-              <MantineAvatar size={50} src={avatarURL} radius={30} />
-              <Text fontSize="medium" fontWeight={500}>
-                {dataUser.name} {dataUser.surname} <br />@{dataUser.username}
-              </Text>
+                <MantineAvatar size={50} src={avatarURL} radius={30} />
+                <Text fontSize="medium" fontWeight={500}>
+                  {dataUser.name} {dataUser.surname} <br />@{dataUser.username}
+                </Text>
               </Group>
               <UserMenu />
             </Group>
           </div>
         </nav>
-
-        {active === "Domů" && <Home />}
+        <div className={classes.appcontainer}>
+        { (active === "Domů" || active === "neweventt") && <Home /> }
+        {active === "newevent" && <NewEvent />}
+        </div>
       </div>
     )
   );

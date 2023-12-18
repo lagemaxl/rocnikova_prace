@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import pb from "../lib/pocketbase";
 import classes from "~/style/BadgeCard.module.css";
+import { IconMapPin, IconCalendarEvent } from "@tabler/icons-react";
 
 function formatDate(dateStr: string): string {
   // Vytvoření Date objektu z ISO řetězce
@@ -8,24 +9,23 @@ function formatDate(dateStr: string): string {
 
   // Nastavení lokalizace a formátu
   const options: Intl.DateTimeFormatOptions = {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
   };
 
   // Formátování data do požadovaného formátu
-  return date.toLocaleString('cs-CZ', options).replace(',', '');
+  return date.toLocaleString("cs-CZ", options).replace(",", "");
 }
-
 
 interface Event {
   id: string;
   title: string;
   description: string;
-  images: string[]; 
+  image: string;
   collectionId: string;
   from_date: string;
   to_date: string;
@@ -66,22 +66,35 @@ export default function Home() {
 }
 
 export function EventCard({ event }: { event: Event }) {
-  const imageUrl = event.images.length > 0 
-    ? `http://127.0.0.1:8090/api/files/${event.collectionId}/${event.id}/${event.images[0]}` 
-    : 'default_image_path.jpg';
+  const imageUrl = `http://127.0.0.1:8090/api/files/${event.collectionId}/${event.id}/${event.image}`
 
-  const shortDescription = event.description.length > 100 
-    ? `${event.description.substring(0, 97)}...` 
-    : event.description;
+
+  const shortDescription =
+    event.description.length > 100
+      ? `${event.description.substring(0, 97)}...`
+      : event.description;
 
   return (
     <div className={classes.card}>
-      <img src={imageUrl} alt="Event Image" className={classes.image} />
-      <div className={classes.info}>
-        <h1>{event.title}</h1>
-        <p>{shortDescription}</p>
-        <p>od: {formatDate(event.from_date)}</p>
-        <p>do: {formatDate(event.to_date)}</p>
+      <div className={classes.cardcontent}>
+        <img src={imageUrl} alt="Event Image" className={classes.image} />
+        <div className={classes.info}>
+          <h1>{event.title}</h1>
+          <p>{shortDescription}</p>
+          <div className={classes.icontext}>
+            <IconMapPin /> <p>Place</p>
+          </div>
+          <div className={classes.icontext}>
+            <IconCalendarEvent />
+            <p>
+              {formatDate(event.from_date)} - {formatDate(event.to_date)}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className={classes.buttons}>
+        <button className={classes.buttonjoin}>Přidat se</button>
+        <button className={classes.buttonabout}>Více informací</button>
       </div>
     </div>
   );
