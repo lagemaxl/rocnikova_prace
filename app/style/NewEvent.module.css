@@ -8,8 +8,14 @@
 
 .content {
     width: 100%;
+    display: flex;
+    flex-direction: row;
 }
 
 .input {
+    margin-top: 1em;
+}
+
+.map {
     margin-top: 1em;
 }

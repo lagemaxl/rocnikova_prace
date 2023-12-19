@@ -4,16 +4,21 @@ import { DateTimePicker } from "@mantine/dates";
 import classes from "~/style/NewEvent.module.css";
 import pb from "../lib/pocketbase";
 import "@mantine/dates/styles.css";
+import 'leaflet/dist/leaflet.css';
 
 // Dynamic imports for Leaflet components
 let MapContainer: typeof import("react-leaflet")["MapContainer"];
 let TileLayer: typeof import("react-leaflet")["TileLayer"];
+let Marker: typeof import("react-leaflet")["Marker"];
+let useMapEvents: typeof import("react-leaflet")["useMapEvents"];
 
 
 if (typeof window !== 'undefined') {
   const leaflet = require('react-leaflet');
   MapContainer = leaflet.MapContainer;
   TileLayer = leaflet.TileLayer;
+  Marker = leaflet.Marker;
+  useMapEvents = leaflet.useMapEvents;
   require('leaflet/dist/leaflet.css');
 }
 
@@ -25,6 +30,7 @@ type FormData = {
   to_date: Date | null;
   place: string;
   owner: string;
+  location: [number, number];
 };
 
 
@@ -37,6 +43,7 @@ export default function NewEvent() {
     to_date: null,
     place: "",
     owner: "oj9iuh2dajc5edo",
+    location: [50.6594, 14.0416],
   });
   const handleChange =
     (field: keyof FormData) => (value: string | Date | File | null) => {
@@ -76,19 +83,24 @@ export default function NewEvent() {
     }
   }, []);
 
+  const Markers = () => {
+    const map = useMapEvents({
+      click(e) {
+        setFormData({ ...formData, location: [e.latlng.lat, e.latlng.lng] });
+      },
+    });
+
+    console.log(formData.location);
+
+    return formData.location ? (
+      <Marker position={formData.location} interactive={false} />
+    ) : null;
+  };
+
+
   return (
     <div className={classes.content}>
       <div className={classes.container}>
-      {typeof window !== 'undefined' && (
-          <MapContainer
-            center={[50.6594, 14.0416]}
-            zoom={13}
-            style={{ height: '400px', width: '100%' }}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          </MapContainer>
-        )}
-
         <form onSubmit={handleSubmit}>
           <TextInput
             required
@@ -146,6 +158,21 @@ export default function NewEvent() {
           />
           <Button type="submit" className={classes.input}>Přidat událost</Button>
         </form>
+      </div>
+      <div className={classes.container}>
+      {typeof window !== 'undefined' && (
+          <MapContainer
+            center={[50.6594, 14.0416]}
+            zoom={13}
+            className={classes.map}
+            style={{ height: '400px', width: '100%' }}
+          >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <Markers />
+          </MapContainer>
+        )}
+
+        <p>Na mapě označte přesné místo konání akce</p>
       </div>
     </div>
   );
