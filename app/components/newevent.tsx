@@ -1,9 +1,21 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { TextInput, Textarea, FileInput, Button } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import classes from "~/style/NewEvent.module.css";
 import pb from "../lib/pocketbase";
 import "@mantine/dates/styles.css";
+
+// Dynamic imports for Leaflet components
+let MapContainer: typeof import("react-leaflet")["MapContainer"];
+let TileLayer: typeof import("react-leaflet")["TileLayer"];
+
+
+if (typeof window !== 'undefined') {
+  const leaflet = require('react-leaflet');
+  MapContainer = leaflet.MapContainer;
+  TileLayer = leaflet.TileLayer;
+  require('leaflet/dist/leaflet.css');
+}
 
 type FormData = {
   title: string;
@@ -15,6 +27,7 @@ type FormData = {
   owner: string;
 };
 
+
 export default function NewEvent() {
   const [formData, setFormData] = useState<FormData>({
     title: "",
@@ -25,7 +38,6 @@ export default function NewEvent() {
     place: "",
     owner: "oj9iuh2dajc5edo",
   });
-
   const handleChange =
     (field: keyof FormData) => (value: string | Date | File | null) => {
       setFormData({ ...formData, [field]: value });
@@ -52,17 +64,31 @@ export default function NewEvent() {
 
     try {
       const record = await pb.collection("events").create(data);
-      // Process successful result
       console.log("Event created:", record);
     } catch (error) {
       console.error("Failed to create event:", error);
-      // Process error
     }
   };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      require('leaflet/dist/leaflet.css');
+    }
+  }, []);
 
   return (
     <div className={classes.content}>
       <div className={classes.container}>
+      {typeof window !== 'undefined' && (
+          <MapContainer
+            center={[50.6594, 14.0416]}
+            zoom={13}
+            style={{ height: '400px', width: '100%' }}
+          >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          </MapContainer>
+        )}
+
         <form onSubmit={handleSubmit}>
           <TextInput
             required
@@ -120,7 +146,6 @@ export default function NewEvent() {
           />
           <Button type="submit" className={classes.input}>Přidat událost</Button>
         </form>
-
       </div>
     </div>
   );
