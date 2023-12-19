@@ -30,6 +30,7 @@ interface Event {
   from_date: string;
   to_date: string;
   owner: string;
+  place: string;
 }
 
 async function getEvents(): Promise<Event[]> {
@@ -82,7 +83,7 @@ export function EventCard({ event }: { event: Event }) {
           <h1>{event.title}</h1>
           <p>{shortDescription}</p>
           <div className={classes.icontext}>
-            <IconMapPin /> <p>Place</p>
+            <IconMapPin /> {event.place}
           </div>
           <div className={classes.icontext}>
             <IconCalendarEvent />

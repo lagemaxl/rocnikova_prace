@@ -3,6 +3,7 @@ import { TextInput, Textarea, FileInput, Button } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import classes from "~/style/NewEvent.module.css";
 import pb from "../lib/pocketbase";
+import "@mantine/dates/styles.css";
 
 type FormData = {
   title: string;
@@ -32,7 +33,7 @@ export default function NewEvent() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const data = new FormData();
     data.append("title", formData.title);
     data.append("description", formData.description);
@@ -65,8 +66,8 @@ export default function NewEvent() {
         <form onSubmit={handleSubmit}>
           <TextInput
             required
-            label="Event Title"
-            placeholder="Enter event title"
+            label="Název"
+            placeholder="Napište název události"
             value={formData.title}
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
               handleChange("title")(event.currentTarget.value)
@@ -74,45 +75,52 @@ export default function NewEvent() {
           />
           <Textarea
             required
-            label="Description"
-            placeholder="Enter event description"
+            label="Popis"
+            placeholder="Napište popis události"
             value={formData.description}
+            className={classes.input}
             onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
               handleChange("description")(event.currentTarget.value)
             }
           />
           <FileInput
-            label="Event Image"
-            placeholder="Upload an image"
+            required
+            label="Obrázek"
+            placeholder="Nahrajte obrázek události"
+            className={classes.input}
             onChange={(file: File | null) => handleChange("image")(file)}
           />
           <DateTimePicker
+            required
             valueFormat="YYYY-MM-DD HH:mm:ss"
-            label="Start Date and Time"
-            placeholder="Select start date"
+            label="Od"
+            placeholder="Vyberte datum a čas začátku události"
             value={formData.from_date}
+            className={classes.input}
             onChange={(date: Date | null) => handleChange("from_date")(date)}
           />
           <DateTimePicker
+            required
             valueFormat="YYYY-MM-DD HH:mm:ss"
-            label="End Date and Time"
-            placeholder="Select end date"
+            label="Do"
+            placeholder="Vyberte datum a čas konce události"
+            className={classes.input}
             value={formData.to_date}
             onChange={(date: Date | null) => handleChange("to_date")(date)}
           />
           <TextInput
             required
-            label="Location"
-            placeholder="Enter event location"
+            label="Místo"
+            placeholder="Napište místo konání události"
             value={formData.place}
+            className={classes.input}
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
               handleChange("place")(event.currentTarget.value)
             }
           />
-          <Button type="submit">
-            Submit Event
-          </Button>
+          <Button type="submit" className={classes.input}>Přidat událost</Button>
         </form>
+
       </div>
     </div>
   );
