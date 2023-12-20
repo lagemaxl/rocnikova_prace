@@ -12,7 +12,6 @@ let TileLayer: typeof import("react-leaflet")["TileLayer"];
 let Marker: typeof import("react-leaflet")["Marker"];
 let useMapEvents: typeof import("react-leaflet")["useMapEvents"];
 
-
 if (typeof window !== 'undefined') {
   const leaflet = require('react-leaflet');
   MapContainer = leaflet.MapContainer;

@@ -52,6 +52,9 @@
   .info{
     padding: 1em;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
   }
 
   .buttonjoin {
@@ -97,4 +100,5 @@
 
   .cardcontent {
     width: 100%;
+    gap: 1em;
   }
