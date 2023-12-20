@@ -5,6 +5,7 @@ import classes from "~/style/NewEvent.module.css";
 import pb from "../lib/pocketbase";
 import "@mantine/dates/styles.css";
 import 'leaflet/dist/leaflet.css';
+import { useNavigate } from "react-router-dom";
 
 // Dynamic imports for Leaflet components
 let MapContainer: typeof import("react-leaflet")["MapContainer"];
@@ -33,7 +34,9 @@ type FormData = {
 };
 
 
+
 export default function NewEvent() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
@@ -70,6 +73,7 @@ export default function NewEvent() {
 
     try {
       const record = await pb.collection("events").create(data);
+      window.location.reload();
       console.log("Event created:", record);
     } catch (error) {
       console.error("Failed to create event:", error);
