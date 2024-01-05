@@ -4,6 +4,7 @@ import classes from "~/style/NavbarSimple.module.css";
 import pb from "../lib/pocketbase";
 import Home from "./Home";
 import NewEvent from "~/components/newevent";
+import { Outlet } from "@remix-run/react";
 import {
   Menu,
   Group,
@@ -40,12 +41,12 @@ interface UserData {
 }
 
 const data: LinkData[] = [
-  { link: "/home", label: "Domů", icon: IconHome },
-  { link: "/notifications", label: "Oznámení", icon: IconBellRinging },
-  { link: "/settings", label: "Nastavení", icon: IconSettings },
-  { link: "/groups", label: "Skupiny", icon: IconUsersGroup },
-  { link: "/profile", label: "Můj profil", icon: IconUserCircle },
-  { link: "/history", label: "Historie", icon: IconHistory },
+  { link: "/app/home", label: "Domů", icon: IconHome },
+  { link: "/app/notifications", label: "Oznámení", icon: IconBellRinging },
+  { link: "/app/settings", label: "Nastavení", icon: IconSettings },
+  { link: "/app/groups", label: "Skupiny", icon: IconUsersGroup },
+  { link: "/app/profile", label: "Můj profil", icon: IconUserCircle },
+  { link: "/app/history", label: "Historie", icon: IconHistory },
 ];
 
 export default function NavbarSimple() {
@@ -87,6 +88,7 @@ export default function NavbarSimple() {
       onClick={(event) => {
         event.preventDefault();
         setActive(item.label);
+        navigate(item.link);
       }}
       key={item.label}
     >
@@ -103,7 +105,10 @@ export default function NavbarSimple() {
             {links}
             <button
               className={classes.addeventbutton}
-              onClick={() => setActive("newevent")}
+              onClick={() => {
+                setActive("newevent");
+                navigate("/app/new");
+              }}
             >
               Vytvořit událost
             </button>
@@ -122,8 +127,11 @@ export default function NavbarSimple() {
           </div>
         </nav>
         <div className={classes.appcontainer}>
+          <Outlet />
+          {/* 
         { (active === "Domů" || active === "neweventt") && <Home /> }
         {active === "newevent" && <NewEvent />}
+        */}
         </div>
       </div>
     )
