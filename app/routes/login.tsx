@@ -43,7 +43,7 @@ const AuthenticationImage: React.FC = () => {
       console.log("Authentication Successful", authData);
       console.log(authData.token);
       //localStorage.setItem("token", authData.token);
-      navigate("/app");
+      navigate("/app/home");
     } catch (err) {
       if (err instanceof Error) {
         setError("Nepodařilo se přihlásit, zkuste to prosím znovu");
