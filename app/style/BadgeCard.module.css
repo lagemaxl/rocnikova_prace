@@ -88,10 +88,13 @@ p {
     .buttonjoin {
       background-color: #228be6;
       color: white;
+      border: 1px solid transparent;
     }
     
     .buttonjoin:hover {
-      background-color: #1c7ed6;  
+      background-color: white;
+      color: #228be6;
+      border: 1px solid #228be6;
     }
     
     .buttonabout {
