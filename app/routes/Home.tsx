@@ -33,6 +33,14 @@ interface Event {
   place: string;
 }
 
+interface UserData {
+  id?: string;
+  avatar?: string;
+  name?: string;
+  surname?: string;
+  username?: string;
+}
+
 async function getEvents(): Promise<Event[]> {
   try {
     const res = await fetch(
@@ -74,6 +82,55 @@ export function EventCard({ event }: { event: Event }) {
       ? `${event.description.substring(0, 97)}...`
       : event.description;
 
+      const [dataUser, setDataUser] = useState<UserData | null>(null);
+      const [eventUsers, setEventUsers] = useState<{ users: string[] }>({ users: [] });
+      
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetch(`http://127.0.0.1:8090/api/collections/users/records/${pb?.authStore?.model?.id}`);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const jsonData: UserData = await response.json();
+            setDataUser(jsonData);
+          } catch (error) {
+            console.error("There was a problem with the fetch operation:", error);
+          }
+        };
+        if (pb.authStore.isValid) {
+          fetchData();
+        }
+      }, [pb?.authStore?.isValid]);
+      
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetch(`http://127.0.0.1:8090/api/collections/events/records/${event.id}`);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const jsonData = await response.json();
+            setEventUsers(jsonData);
+          } catch (error) {
+            console.error("There was a problem with the fetch operation:", error);
+          }
+        };
+        fetchData();
+      }, []);
+      
+      const data = {
+        users: [
+          dataUser?.id,
+          ...eventUsers.users.filter((user: string) => user !== dataUser?.id),
+        ],
+      };
+      
+
+  const handleJoinEvent = async (eventId: string) => {
+    await pb.collection("events").update(eventId, data);
+  };
+
   return (
     <div className={classes.card}>
       <div className={classes.cardcontent}>
@@ -95,7 +152,12 @@ export function EventCard({ event }: { event: Event }) {
         </div>
       </div>
       <div className={classes.buttons}>
-        <button className={classes.buttonjoin}>Přidat se</button>
+        <button
+          className={classes.buttonjoin}
+          onClick={() => handleJoinEvent(event.id)}
+        >
+          Přidat se
+        </button>
         <button className={classes.buttonabout}>Více informací</button>
       </div>
     </div>

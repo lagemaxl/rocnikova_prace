@@ -146,12 +146,38 @@
 }
 
 @media (max-width: 750px) {
+
+  /*
   .navbar {
-    display: none; /* Hides the navbar on small screens */
+    //display: none; 
+    width: 15%;
   }
 
   .appcontainer {
-    width: 100%;
-    margin-left: 0;
+    //width: 100%;
+    margin-left: 15%;
   }
+
+  .link{
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+  }
+
+  .link svg {
+    margin: 0;
+    padding: 0;
+    width: 50%;
+    height: 50%;
+  }
+
+  .link span {
+    display: none;
+  }
+  */
+
 }

@@ -12,9 +12,9 @@ export default {
       route("/app", "routes/app.tsx", () => {
         route("home", "routes/Home.tsx", { index: true });
         route("new", "components/newevent.tsx", { index: true });
+        route("event", "routes/event.tsx", { index: true });
         //route("home", "routes/Home.tsx", { index: true });
         //route("trending", "concerts/trending.tsx");
-        //route(":city", "concerts/city.tsx");
       });
     });
   }
