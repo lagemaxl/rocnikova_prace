@@ -4,7 +4,7 @@ import { DateTimePicker } from "@mantine/dates";
 import classes from "~/style/NewEvent.module.css";
 import pb from "../lib/pocketbase";
 import "@mantine/dates/styles.css";
-import 'leaflet/dist/leaflet.css';
+import "leaflet/dist/leaflet.css";
 import { useNavigate } from "react-router-dom";
 
 // Dynamic imports for Leaflet components
@@ -13,13 +13,13 @@ let TileLayer: typeof import("react-leaflet")["TileLayer"];
 let Marker: typeof import("react-leaflet")["Marker"];
 let useMapEvents: typeof import("react-leaflet")["useMapEvents"];
 
-if (typeof window !== 'undefined') {
-  const leaflet = require('react-leaflet');
+if (typeof window !== "undefined") {
+  const leaflet = require("react-leaflet");
   MapContainer = leaflet.MapContainer;
   TileLayer = leaflet.TileLayer;
   Marker = leaflet.Marker;
   useMapEvents = leaflet.useMapEvents;
-  require('leaflet/dist/leaflet.css');
+  require("leaflet/dist/leaflet.css");
 }
 
 type FormData = {
@@ -32,8 +32,6 @@ type FormData = {
   owner: string;
   location: [number, number];
 };
-
-
 
 export default function NewEvent() {
   const navigate = useNavigate();
@@ -73,7 +71,7 @@ export default function NewEvent() {
 
     try {
       const record = await pb.collection("events").create(data);
-      window.location.reload();
+      navigate("/app/home");
       console.log("Event created:", record);
     } catch (error) {
       console.error("Failed to create event:", error);
@@ -81,8 +79,8 @@ export default function NewEvent() {
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      require('leaflet/dist/leaflet.css');
+    if (typeof window !== "undefined") {
+      require("leaflet/dist/leaflet.css");
     }
   }, []);
 
@@ -99,7 +97,6 @@ export default function NewEvent() {
       <Marker position={formData.location} interactive={false} />
     ) : null;
   };
-
 
   return (
     <div className={classes.content}>
@@ -159,16 +156,18 @@ export default function NewEvent() {
               handleChange("place")(event.currentTarget.value)
             }
           />
-          <Button type="submit" className={classes.input}>Přidat událost</Button>
+          <Button type="submit" className={classes.input}>
+            Přidat událost
+          </Button>
         </form>
       </div>
       <div className={classes.container}>
-      {typeof window !== 'undefined' && (
+        {typeof window !== "undefined" && (
           <MapContainer
             center={[50.6594, 14.0416]}
             zoom={13}
             className={classes.map}
-            style={{ height: '400px', width: '100%' }}
+            style={{ height: "400px", width: "100%" }}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Markers />

@@ -67,8 +67,7 @@ export default function Home() {
 }
 
 export function EventCard({ event }: { event: Event }) {
-  const imageUrl = `http://127.0.0.1:8090/api/files/${event.collectionId}/${event.id}/${event.image}`
-
+  const imageUrl = `http://127.0.0.1:8090/api/files/${event.collectionId}/${event.id}/${event.image}`;
 
   const shortDescription =
     event.description.length > 100
@@ -79,7 +78,7 @@ export function EventCard({ event }: { event: Event }) {
     <div className={classes.card}>
       <div className={classes.cardcontent}>
         <div className={classes.imgcontainer}>
-        <img src={imageUrl} alt="Event Image" className={classes.image} />
+          <img src={imageUrl} alt="Event Image" className={classes.image} />
         </div>
         <div className={classes.info}>
           <h1>{event.title}</h1>

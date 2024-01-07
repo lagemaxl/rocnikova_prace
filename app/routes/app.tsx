@@ -2,18 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import classes from "~/style/NavbarSimple.module.css";
 import pb from "../lib/pocketbase";
-import Home from "./Home";
-import NewEvent from "~/components/newevent";
 import { Outlet } from "@remix-run/react";
 import {
   Menu,
   Group,
   Text,
-  useMantineTheme,
   ActionIcon,
   rem,
   Avatar as MantineAvatar,
-  Avatar,
 } from "@mantine/core";
 import {
   IconLogout,
@@ -128,10 +124,6 @@ export default function NavbarSimple() {
         </nav>
         <div className={classes.appcontainer}>
           <Outlet />
-          {/* 
-        { (active === "Domů" || active === "neweventt") && <Home /> }
-        {active === "newevent" && <NewEvent />}
-        */}
         </div>
       </div>
     )
