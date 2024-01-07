@@ -78,7 +78,9 @@ export function EventCard({ event }: { event: Event }) {
   return (
     <div className={classes.card}>
       <div className={classes.cardcontent}>
+        <div className={classes.imgcontainer}>
         <img src={imageUrl} alt="Event Image" className={classes.image} />
+        </div>
         <div className={classes.info}>
           <h1>{event.title}</h1>
           <p>{shortDescription}</p>
