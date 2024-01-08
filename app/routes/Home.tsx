@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import pb from "../lib/pocketbase";
 import classes from "~/style/BadgeCard.module.css";
 import { IconMapPin, IconCalendarEvent } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
+
 
 function formatDate(dateStr: string): string {
   // Vytvoření Date objektu z ISO řetězce
@@ -45,6 +47,7 @@ async function getEvents(): Promise<Event[]> {
   try {
     const res = await fetch(
       "http://127.0.0.1:8090/api/collections/events/records/",
+      //`${process.env.DATABASE_URL_STRING}/api/collections/events/records/`, 
       { cache: "no-store" }
     );
     if (!res.ok) {
@@ -126,9 +129,12 @@ export function EventCard({ event }: { event: Event }) {
         ],
       };
       
-
   const handleJoinEvent = async (eventId: string) => {
     await pb.collection("events").update(eventId, data);
+  };
+  const navigate = useNavigate();
+  const handleAboutEvent = async (eventId: string) => {
+    navigate(`/app/event?id=${eventId}`);
   };
 
   return (
@@ -158,7 +164,7 @@ export function EventCard({ event }: { event: Event }) {
         >
           Přidat se
         </button>
-        <button className={classes.buttonabout}>Více informací</button>
+        <button className={classes.buttonabout} onClick={() => handleAboutEvent(event.id)}>Více informací</button>
       </div>
     </div>
   );
