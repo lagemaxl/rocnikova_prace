@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../app/style/Event.module.css"],
+  "sourcesContent": ["export default {\"content\":\"Event-module__content__k4Wsw\",\"text\":\"Event-module__text__trzRv\",\"images\":\"Event-module__images__Hgyvm\",\"map\":\"Event-module__map__CBY-Z\",\"carouselcon\":\"Event-module__carouselcon__97702\",\"container\":\"Event-module__container__7HS-F\"};"],
+  "mappings": ";AAAA,IAAO,uBAAQ,EAAC,WAAU,gCAA+B,QAAO,6BAA4B,UAAS,+BAA8B,OAAM,4BAA2B,eAAc,oCAAmC,aAAY,iCAAgC;",
+  "names": []
+}
