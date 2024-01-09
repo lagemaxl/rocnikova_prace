@@ -3,6 +3,10 @@
   padding: 0;
 }
 
+.carde {
+  width: 300px;
+}
+
 .card {
   background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
   border-radius: 20px;
@@ -75,7 +79,7 @@ p {
       gap: 0.5em;
     }
     
-    .buttonjoin, .buttonabout {
+    .buttonjoin, .buttonabout, .buttonjoinNO {
       border-radius: 10px;
       padding: 0.5em 1em;
       border: none;
@@ -95,6 +99,18 @@ p {
       background-color: white;
       color: #228be6;
       border: 1px solid #228be6;
+    }
+
+    .buttonjoinNO {
+      background-color: red;
+      color: white;
+      border: 1px solid transparent;
+    }
+    
+    .buttonjoinNO:hover {
+      background-color: white;
+      color: red;
+      border: 1px solid red;
     }
     
     .buttonabout {
