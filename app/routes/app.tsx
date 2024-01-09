@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import classes from "~/style/NavbarSimple.module.css";
 import pb from "../lib/pocketbase";
 import { Outlet } from "@remix-run/react";
+import { useDisclosure } from "@mantine/hooks";
+import { Burger } from "@mantine/core";
 import {
   Menu,
   Group,
@@ -76,6 +78,8 @@ export default function NavbarSimple() {
     }
   }, [navigate, pb.authStore.isValid]);
 
+  const [opened, { toggle }] = useDisclosure();
+
   const links = data.map((item: LinkData) => (
     <a
       className={`${classes.link} ${
@@ -85,6 +89,7 @@ export default function NavbarSimple() {
         event.preventDefault();
         setActive(item.label);
         navigate(item.link);
+        toggle();
       }}
       key={item.label}
     >
@@ -93,10 +98,11 @@ export default function NavbarSimple() {
     </a>
   ));
 
+
   return (
     dataUser && (
       <div className={classes.container}>
-        <nav className={classes.navbar}>
+        <nav className={`${classes.navbar} ${opened ? classes.navmobile : ""}`}>
           <div className={classes.navbarMain}>
             {links}
             <button
@@ -122,7 +128,10 @@ export default function NavbarSimple() {
             </Group>
           </div>
         </nav>
-        <div className={classes.appcontainer}>
+        <div className={classes.burger}>
+          <Burger opened={opened} onClick={toggle} />
+        </div>
+        <div className={`${classes.appcontainer} ${opened ? classes.nodisplay : ""}`}>
           <Outlet />
         </div>
       </div>

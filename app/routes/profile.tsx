@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import classes from "~/style/Event.module.css";
+import classes from "~/style/Profile.module.css";
 
 function formatDate(dateStr: string): string {
   // Vytvoření Date objektu z ISO řetězce
@@ -26,7 +26,7 @@ export default function Profile() {
 
   return (
     <div className={classes.content}>
-    mkkkk
+    
     </div>
   );
 }

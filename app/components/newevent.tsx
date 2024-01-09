@@ -25,7 +25,7 @@ if (typeof window !== "undefined") {
 type FormData = {
   title: string;
   description: string;
-  image: File | null;
+  image: File[];
   from_date: Date | null;
   to_date: Date | null;
   place: string;
@@ -38,17 +38,17 @@ export default function NewEvent() {
   const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
-    image: null,
+    image: [],
     from_date: null,
     to_date: null,
     place: "",
-    owner: "oj9iuh2dajc5edo",
+    owner: "",
     location: [50.6594, 14.0416],
   });
   const handleChange =
-    (field: keyof FormData) => (value: string | Date | File | null) => {
-      setFormData({ ...formData, [field]: value });
-    };
+  (field: keyof FormData) => (value: string | Date | File[] | null) => {
+    setFormData({ ...formData, [field]: value });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,11 +63,17 @@ export default function NewEvent() {
       data.append("to_date", formData.to_date.toISOString());
     }
     data.append("place", formData.place);
-    data.append("owner", formData.owner);
+    if (pb.authStore.model?.id) {
+      data.append("owner", pb.authStore.model.id);
+    }
 
     if (formData.image) {
-      data.append("image", formData.image, formData.image.name);
+      formData.image.forEach((file, index) =>
+        data.append(`image`, file, file.name)
+      );
     }
+    
+    data.append("location", JSON.stringify(formData.location));
 
     try {
       const record = await pb.collection("events").create(data);
@@ -97,6 +103,7 @@ export default function NewEvent() {
       <Marker position={formData.location} interactive={false} />
     ) : null;
   };
+  
 
   return (
     <div className={classes.content}>
@@ -123,10 +130,11 @@ export default function NewEvent() {
           />
           <FileInput
             required
-            label="Obrázek"
-            placeholder="Nahrajte obrázek události"
+            label="Obrázky"
+            placeholder="Nahrajte obrázky události"
             className={classes.input}
-            onChange={(file: File | null) => handleChange("image")(file)}
+            multiple
+            onChange={(files: File[] | null) => handleChange("image")(files)}
           />
           <DateTimePicker
             required

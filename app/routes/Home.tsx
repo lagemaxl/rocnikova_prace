@@ -3,12 +3,11 @@ import pb from "../lib/pocketbase";
 import classes from "~/style/BadgeCard.module.css";
 import { IconMapPin, IconCalendarEvent } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import { Carousel } from "@mantine/carousel";
 
 function formatDate(dateStr: string): string {
-  // Vytvoření Date objektu z ISO řetězce
   const date = new Date(dateStr);
 
-  // Nastavení lokalizace a formátu
   const options: Intl.DateTimeFormatOptions = {
     day: "2-digit",
     month: "2-digit",
@@ -18,7 +17,6 @@ function formatDate(dateStr: string): string {
     hour12: false,
   };
 
-  // Formátování data do požadovaného formátu
   return date.toLocaleString("cs-CZ", options).replace(",", "");
 }
 
@@ -46,7 +44,6 @@ async function getEvents(): Promise<Event[]> {
   try {
     const res = await fetch(
       "http://127.0.0.1:8090/api/collections/events/records/",
-      //`${process.env.DATABASE_URL_STRING}/api/collections/events/records/`,
       { cache: "no-store" }
     );
     if (!res.ok) {
@@ -62,10 +59,18 @@ async function getEvents(): Promise<Event[]> {
 
 export default function Home() {
   const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    getEvents().then(setEvents);
+    getEvents().then((fetchedEvents) => {
+      setEvents(fetchedEvents);
+      setLoading(false);
+    });
   }, []);
+
+  if (loading) {
+    return <div>Loading events...</div>;
+  }
 
   return (
     <div className={classes.home}>
@@ -77,14 +82,19 @@ export default function Home() {
 }
 
 export function EventCard({ event }: { event: Event }) {
-  const imageUrl = `http://127.0.0.1:8090/api/files/${event.collectionId}/${event.id}/${event.image}`;
+  let imageUrls = [];
+  for (let i = 0; i < event.image.length; i++) {
+      imageUrls.push(`http://127.0.0.1:8090/api/files/${event.collectionId}/${event.id}/${event.image[i]}`);
+  }
+  const image = `http://127.0.0.1:8090/api/files/${event.collectionId}/${event.id}/${event.image[0]}`;
+  const [loading2, setLoading2] = useState<boolean>(true);
+  const [dataUser, setDataUser] = useState<UserData | null>(null);
 
   const shortDescription =
     event.description.length > 100
       ? `${event.description.substring(0, 97)}...`
       : event.description;
 
-  const [dataUser, setDataUser] = useState<UserData | null>(null);
   const [eventUsers, setEventUsers] = useState<{ users: string[] }>({
     users: [],
   });
@@ -120,6 +130,7 @@ export function EventCard({ event }: { event: Event }) {
         }
         const jsonData = await response.json();
         setEventUsers(jsonData);
+        setLoading2(false);
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
@@ -128,27 +139,20 @@ export function EventCard({ event }: { event: Event }) {
   }, []);
 
   const data = {
-    users: [
-      ...eventUsers.users.filter(user => user !== dataUser?.id),
-    ],
+    users: [...eventUsers.users.filter((user) => user !== dataUser?.id)],
   };
-  
-  const isUserInEvent = eventUsers.users.includes(dataUser?.id ?? '');
-  
-  const handleJoinEvent = async (eventId:string) => {
-    // If the user is in the event, remove them
+
+  const isUserInEvent = eventUsers.users.includes(dataUser?.id ?? "");
+  const isUserOwner = event.owner === dataUser?.id;
+
+  const handleJoinEvent = async (eventId: string) => {
+    setLoading2(true);
     if (isUserInEvent) {
-      data.users = eventUsers.users.filter(user => user !== dataUser?.id);
-    } 
-    // Otherwise, add them to the event
-    else {
-      data.users = [dataUser?.id ?? '', ...eventUsers.users];
+      data.users = eventUsers.users.filter((user) => user !== dataUser?.id);
+    } else {
+      data.users = [dataUser?.id ?? "", ...eventUsers.users];
     }
-  
-    // Update the event data
     await pb.collection("events").update(eventId, data);
-  
-    // After updating, re-fetch the event users data
     try {
       const response = await fetch(
         `http://127.0.0.1:8090/api/collections/events/records/${eventId}`
@@ -158,21 +162,35 @@ export function EventCard({ event }: { event: Event }) {
       }
       const jsonData = await response.json();
       setEventUsers(jsonData); // Update the event users state
+      setLoading2(false);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
   };
-  
+
   const navigate = useNavigate();
   const handleAboutEvent = async (eventId: string) => {
     navigate(`/app/event?id=${eventId}`);
   };
 
+  const slides = imageUrls.map((image) => (
+    <Carousel.Slide key={image}>
+      <img src={image} alt="Event Image" className={classes.image} />
+    </Carousel.Slide>
+  ));
+
   return (
     <div className={classes.card}>
       <div className={classes.cardcontent}>
         <div className={classes.imgcontainer}>
-          <img src={imageUrl} alt="Event Image" className={classes.image} />
+        {event.image.length === 1 ? (
+  <img src={image} alt="Event Image" className={classes.image} />
+) : (
+  <Carousel withIndicators height={200}>
+    {slides}
+  </Carousel>
+)}
+
         </div>
         <div className={classes.info}>
           <h1>{event.title}</h1>
@@ -189,20 +207,26 @@ export function EventCard({ event }: { event: Event }) {
         </div>
       </div>
       <div className={classes.buttons}>
-        {isUserInEvent ? (
-          <button
-            className={classes.buttonjoinNO}
-            onClick={() => handleJoinEvent(event.id)}
-          >
-            Už nemám zájem
-          </button>
+        {isUserOwner ? (
+          <button className={classes.buttonjoin}>Editovat</button>
+        ) : !loading2 ? (
+          isUserInEvent ? (
+            <button
+              className={classes.buttonjoinNO}
+              onClick={() => handleJoinEvent(event.id)}
+            >
+              Už nemám zájem
+            </button>
+          ) : (
+            <button
+              className={classes.buttonjoin}
+              onClick={() => handleJoinEvent(event.id)}
+            >
+              Mám zájem
+            </button>
+          )
         ) : (
-          <button
-            className={classes.buttonjoin}
-            onClick={() => handleJoinEvent(event.id)}
-          >
-            Mám zájem
-          </button>
+          <span>Zpracovávám</span> // Showing "Zpracovávám" when loading
         )}
         <button
           className={classes.buttonabout}
@@ -213,5 +237,4 @@ export function EventCard({ event }: { event: Event }) {
       </div>
     </div>
   );
-  
 }

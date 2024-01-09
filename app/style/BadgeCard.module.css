@@ -18,10 +18,11 @@
   align-items: flex-start;
   gap: 1em;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease, border-radius 0.3s ease;
+  max-width: 400px;
 }
 
 .card:hover {
-  transform: scale(1.05); /* Mírné zvětšení */
+  transform: scale(1.00); /* Mírné zvětšení */
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Intenzivnější a větší stín */
   border-radius: 25px; /* Změkčení hran při hoveru */
 }
@@ -42,7 +43,7 @@
 }
 
 .card:hover .image{
-  transform: scale(1.2); /* Změnit pozici obrázku na hover */
+  //transform: scale(1.2); /* Změnit pozici obrázku na hover */
 }
 
 

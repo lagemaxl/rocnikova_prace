@@ -10,13 +10,6 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-const images = [
-  "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80",
-  "https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80",
-  "https://images.unsplash.com/photo-1605774337664-7a846e9cdf17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80",
-  "https://images.unsplash.com/photo-1554995207-c18c203602cb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80",
-  "https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80",
-];
 
 interface Event {
   id: string;
@@ -28,6 +21,7 @@ interface Event {
   to_date: string;
   owner: string;
   place: string;
+  location: [number, number];
 }
 
 function formatDate(dateStr: string): string {
@@ -68,14 +62,12 @@ async function getEvent(eventId: string): Promise<Event | null> {
 let MapContainer: typeof import("react-leaflet")["MapContainer"];
 let TileLayer: typeof import("react-leaflet")["TileLayer"];
 let Marker: typeof import("react-leaflet")["Marker"];
-let useMapEvents: typeof import("react-leaflet")["useMapEvents"];
 
 if (typeof window !== "undefined") {
   const leaflet = require("react-leaflet");
   MapContainer = leaflet.MapContainer;
   TileLayer = leaflet.TileLayer;
   Marker = leaflet.Marker;
-  useMapEvents = leaflet.useMapEvents;
   require("leaflet/dist/leaflet.css");
 }
 
@@ -97,13 +89,17 @@ export default function EventDetails() {
     return <div>Načítání...</div>;
   }
 
-  const Markers = () => {
-    // <Marker position={[location.latitude, location.longitude]} interactive={false} />;
-  };
+  console.log(event.location);
 
-  const slides = images.map((image) => (
+  let imageUrls = [];
+for (let i = 0; i < event.image.length; i++) {
+    imageUrls.push(`http://127.0.0.1:8090/api/files/${event.collectionId}/${event.id}/${event.image[i]}`);
+}
+
+
+  const slides = imageUrls.map((image) => (
     <Carousel.Slide key={image}>
-      <Image src={image} height={400} />
+      <Image src={image} className={classes.imageca} height={400} />
     </Carousel.Slide>
   ));
 
@@ -142,7 +138,7 @@ export default function EventDetails() {
               style={{ height: "100%", width: "100%" }}
             >
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              {/*<Markers /> */}
+              <Marker position={[event.location[0], event.location[1]]} interactive={false} />;
             </MapContainer>
           )}
         </div>
@@ -150,3 +146,4 @@ export default function EventDetails() {
     </div>
   );
 }
+
